@@ -31,11 +31,11 @@ export const ColumnUsers: ColumnDef<User>[] = [
 
       return (
         <div className="flex gap-4 text-black">
-          <Link to={userObj?.id?.toString()}>
+          {/* <Link to={userObj?.id?.toString()}>
             <div className="cursor-pointer">
               <Eye className="h-5 w-5" />
             </div>
-          </Link>
+          </Link> */}
 
           <UpdateUser
             UserUpdtId={userObj?.id?.toString()}

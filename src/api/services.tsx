@@ -20,16 +20,9 @@ import {
   updateUserSchema,
 } from "@/interfaces";
 import { useGeneralHook } from "@/hooks/generalHook";
+import { getToken } from "@/utils/localStorage";
 
 
-
-let token = "";
-const usersInfos = localStorage.getItem("USER_TOKEN");
-
-if (usersInfos) {
-  token = JSON.parse(usersInfos).token;
-}
-console.log("ttttttttttttttttttttt", token);
 
 
 
@@ -129,12 +122,19 @@ export const useLogin = () => {
 
 // logout hook
 export const useLogout = () => {
+  const token = getToken();
   const navigate = useNavigate();
+
   const logout = async () => {
     try {
       await axios.post(
         baseUrl + "auth/logout",
-        {},
+        {}, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
       );
       toast.success("logout successfully!!");
       localStorage.removeItem("USER_TOKEN");
@@ -167,6 +167,7 @@ export const useLogout = () => {
 // user hook
 export const useUsers = () => {
   const queryClient = useQueryClient();
+  const token = getToken();
 
   const {
     isOpenFormUser,
@@ -188,7 +189,7 @@ export const useUsers = () => {
         });
         return;
       }
-      await axios.post(`${baseUrl}/users`, userInfos, {
+      await axios.post(`${baseUrl}users`, userInfos, {
         headers: {
           Authorization: `Bearer ${token}`, 
         },
@@ -196,7 +197,8 @@ export const useUsers = () => {
       toast.success('User created successfully!');
       setIsOpenFormUser(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error creating user');
+      //toast.error(err.response?.data?.message || 'Error creating user');
+      console.log(err.response?.data?.message || 'Error creating user');
     }
   };
 
@@ -217,7 +219,7 @@ export const useUsers = () => {
         });
         return;
       }
-      await axios.put(`${baseUrl}/users/${userInfos.id}`, userInfos, {
+      await axios.put(`${baseUrl}users/${userInfos.id}`, userInfos, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -225,7 +227,8 @@ export const useUsers = () => {
       toast.success('User updated successfully!');
       setIsOpenFormUser(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error updating user');
+      //toast.error(err.response?.data?.message || 'Error updating user');
+      console.log(err.response?.data?.message || 'Error updating user');
     }
   };
 
@@ -239,15 +242,18 @@ export const useUsers = () => {
   
   const deleteUser = async (userId: number) => {
     try {
-      await axios.delete(`${baseUrl}/users/${userId}`, {
+      await axios.delete(`${baseUrl}users/${userId}`,
+        {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+       }
+    );
       toast.success('User deleted successfully!');
       setIsOpenFormUser(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error deleting user');
+     // toast.error(err.response?.data?.message || 'Error deleting user');
+      console.log(err.response?.data?.message || 'Error deleting user');
     }
   };
 
@@ -259,15 +265,6 @@ export const useUsers = () => {
   });
 
 
-  let token5 = "";
-const usersInfos = localStorage.getItem("USER_TOKEN");
-
-if (usersInfos) {
-  token5 = JSON.parse(usersInfos).token;
-}
-console.log(`Bearer ${token5}`);
-console.log("7777777777777777777777", `${baseUrl}users`);
-
 
   // get All
   const { data: allUsers, isError, error } = useQuery({
@@ -276,19 +273,18 @@ console.log("7777777777777777777777", `${baseUrl}users`);
       const { data } = await axios.get(`${baseUrl}users`, 
       {
         headers: {
-          Authorization: `Bearer ${token5}`,
+          Authorization: `Bearer ${token}`,
         },
       }
-    );
+     );
       setIsLoadedUser(false);      
       return data;
     },
   });
 
-  if (isError) {
-    console.log("oooooooooooooo", error);
-    
-    toast.error(error?.message || 'Error fetching users');
+  if (isError) {    
+   // toast.error(error?.message || 'Error fetching users');
+    console.log(error?.message || 'Error fetching users');
   }
 
 
@@ -300,7 +296,7 @@ console.log("7777777777777777777777", `${baseUrl}users`);
    } = useQuery({
     queryKey: ["dataOneUser"],
     queryFn: async () => {
-      const { data } = await axios.get(`${baseUrl}/users/${userId}`, 
+      const { data } = await axios.get(`${baseUrl}users/${userId}`, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -313,7 +309,8 @@ console.log("7777777777777777777777", `${baseUrl}users`);
     },
   });
 
-  if (isErrorGetSingleUser) toast.error(errorGetSingleUser.message || "Error");
+  //if (isErrorGetSingleUser) toast.error(errorGetSingleUser.message || "Error");
+  if (isErrorGetSingleUser) console.log(errorGetSingleUser.message || "Error");
  
   
   return {
@@ -334,6 +331,8 @@ console.log("7777777777777777777777", `${baseUrl}users`);
 // insurances hook
 export const useInsurances = () => {
   const queryClient = useQueryClient();
+  const token = getToken();
+
   const {
     isOpenFormInsurance,
     setIsOpenFormInsurance,
@@ -354,7 +353,7 @@ export const useInsurances = () => {
         });
         return;
       }
-      await axios.post(baseUrl, insuranceInfos, {
+      await axios.post(`${baseUrl}insurances`, insuranceInfos, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -362,7 +361,8 @@ export const useInsurances = () => {
       toast.success('Insurance product created successfully!');
       setIsOpenFormInsurance(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error creating insurance product');
+     // toast.error(err.response?.data?.message || 'Error creating insurance product');
+      console.log(err.response?.data?.message || 'Error creating insurance product');
     }
   };
 
@@ -383,7 +383,8 @@ export const useInsurances = () => {
         });
         return;
       }
-      await axios.put(`${baseUrl}/${insuranceInfos.id}`, insuranceInfos, {
+
+      await axios.put(`${baseUrl}insurances/${insuranceInfos.id}`, insuranceInfos, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -391,7 +392,8 @@ export const useInsurances = () => {
       toast.success('Insurance product updated successfully!');
       setIsOpenFormInsurance(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error updating insurance product');
+     // toast.error(err.response?.data?.message || 'Error updating insurance product');
+      console.log(err.response?.data?.message || 'Error updating insurance product');
     }
   };
 
@@ -405,7 +407,7 @@ export const useInsurances = () => {
   // Delete Insurance Product
   const deleteInsurance = async (insuranceId: number) => {
     try {
-      await axios.delete(`${baseUrl}/${insuranceId}`, {
+      await axios.delete(`${baseUrl}insurances/${insuranceId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -413,7 +415,8 @@ export const useInsurances = () => {
       toast.success('Insurance product deleted successfully!');
       setIsOpenFormInsurance(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error deleting insurance product');
+     // toast.error(err.response?.data?.message || 'Error deleting insurance product');
+     console.log(err.response?.data?.message || 'Error deleting insurance product');
     }
   };
 
@@ -428,7 +431,7 @@ export const useInsurances = () => {
   const { data: allInsurances, isError, error } = useQuery({
     queryKey: ['insurances'],
     queryFn: async () => {
-      const { data } = await axios.get(baseUrl, {
+      const { data } = await axios.get(`${baseUrl}insurances`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -439,8 +442,11 @@ export const useInsurances = () => {
   });
 
   if (isError) {
-    toast.error(error?.message || 'Error fetching insurance products');
+    //toast.error(error?.message || 'Error fetching insurance products');
+    console.log(error?.message || 'Error fetching insurance products');
   }
+
+  
 
   // Get Insurance Product by ID
   const { error: errorGetSingleInsurance, 
@@ -448,7 +454,7 @@ export const useInsurances = () => {
     isError: isErrorGetSingleInsurance } = useQuery({
     queryKey: ['dataOneInsurance'],
     queryFn: async () => {
-      const { data } = await axios.get(`${baseUrl}/${insuranceId}`, {
+      const { data } = await axios.get(`${baseUrl}insurances/${insuranceId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -458,7 +464,8 @@ export const useInsurances = () => {
     },
   });
 
-  if (isErrorGetSingleInsurance) toast.error(errorGetSingleInsurance?.message || 'Error fetching insurance product by ID');
+  //if (isErrorGetSingleInsurance) toast.error(errorGetSingleInsurance?.message || 'Error fetching insurance product by ID');
+  if (isErrorGetSingleInsurance) console.log(errorGetSingleInsurance?.message || 'Error fetching insurance product by ID');
 
   return {
     allInsurances,
@@ -478,6 +485,8 @@ export const useInsurances = () => {
 // subscriptions hook
 export const useSubscriptions = () => {
   const queryClient = useQueryClient();
+  const token = getToken();
+
   const {
     isOpenFormSubscription,
     setIsOpenFormSubscription,
@@ -498,7 +507,7 @@ export const useSubscriptions = () => {
         });
         return;
       }
-      await axios.post(baseUrl, subscriptionInfos, {
+      await axios.post(`${baseUrl}subscriptions`, subscriptionInfos, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -527,7 +536,8 @@ export const useSubscriptions = () => {
         });
         return;
       }
-      await axios.put(`${baseUrl}/${subscriptionInfos.id}`, subscriptionInfos, {
+   
+      await axios.put(`${baseUrl}subscriptions/${subscriptionInfos.id}`, subscriptionInfos, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -549,7 +559,8 @@ export const useSubscriptions = () => {
   // Delete Subscription
   const deleteSubscription = async (subscriptionId: number) => {
     try {
-      await axios.delete(`${baseUrl}/${subscriptionId}`, {
+
+      await axios.delete(`${baseUrl}subscriptions/${subscriptionId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -572,7 +583,7 @@ export const useSubscriptions = () => {
   const { data: allSubscriptions, isError, error } = useQuery({
     queryKey: ['subscriptions'],
     queryFn: async () => {
-      const { data } = await axios.get(baseUrl, {
+      const { data } = await axios.get(`${baseUrl}subscriptions`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -592,7 +603,8 @@ export const useSubscriptions = () => {
     isError: isErrorGetSingleSubscription } = useQuery({
     queryKey: ['dataOneSubscription'],
     queryFn: async () => {
-      const { data } = await axios.get(`${baseUrl}/${subscriptionId}`, {
+
+      const { data } = await axios.get(`${baseUrl}subscriptions/${subscriptionId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

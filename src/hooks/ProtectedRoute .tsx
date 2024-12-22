@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
 
 export const UseProtectedRoute = () => {
   const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-    const user = localStorage.getItem("USER_OBJ");
+    const user = localStorage.getItem("USER_TOKEN");
     if (!user) {
       return <Navigate to="/home" replace />;
     }

@@ -17,6 +17,8 @@ const InsurancesPage = () => {
     isLoadedInsurance,
   } = useInsurances();
 
+  
+
 
   const handleSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();

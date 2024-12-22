@@ -19,7 +19,7 @@ const Register = () => {
       setStatusConnexion("initial");
       return;
     }
-    registerMutation({ username, password, role:"ROLE_USER" });
+    registerMutation({ username, password, role:"ROLE_ADMIN" });
   };
 
   const returnLoad = () => {

@@ -36,11 +36,11 @@ export const ColumnInsurances: ColumnDef<Insurance>[] = [
 
       return (
         <div className="flex gap-4 text-black">
-          <Link to={insuranceObj?.id?.toString()}>
+          {/* <Link to={insuranceObj?.id?.toString()}>
             <div className="cursor-pointer">
               <Eye className="h-5 w-5" />
             </div>
-          </Link>
+          </Link> */}
 
           <UpdateInsurance
             InsuranceUpdtId={insuranceObj?.id?.toString()}

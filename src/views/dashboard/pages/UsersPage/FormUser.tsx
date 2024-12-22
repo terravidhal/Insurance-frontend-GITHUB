@@ -96,6 +96,7 @@ export default function FormUser({
                 type="password"
                 defaultValue={defaultPassword}
                 className="col-span-3"
+                placeholder="ex: tokenG&752"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">

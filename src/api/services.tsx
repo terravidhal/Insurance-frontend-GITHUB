@@ -23,6 +23,17 @@ import { useGeneralHook } from "@/hooks/generalHook";
 
 
 
+let token = "";
+const usersInfos = localStorage.getItem("USER_TOKEN");
+
+if (usersInfos) {
+  token = JSON.parse(usersInfos).token;
+}
+console.log("ttttttttttttttttttttt", token);
+
+
+
+
 
 // register hook
 export const useRegister = () => {
@@ -92,7 +103,7 @@ export const useLogin = () => {
       const response = await axios.post(baseUrl + "auth/login", userInfos);
       setIsLogginSuccess(true);
       toast.success("login successfully!!");
-      localStorage.setItem("USER_TOKEN", JSON.stringify(response.data.token));
+      localStorage.setItem("USER_TOKEN", JSON.stringify(response.data));      
       navigate(`/dashboard`);
     } catch (err: any) {
       setLogginError(true);
@@ -122,7 +133,7 @@ export const useLogout = () => {
   const logout = async () => {
     try {
       await axios.post(
-        baseUrl + "logout",
+        baseUrl + "auth/logout",
         {},
       );
       toast.success("logout successfully!!");
@@ -179,7 +190,7 @@ export const useUsers = () => {
       }
       await axios.post(`${baseUrl}/users`, userInfos, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`, 
+          Authorization: `Bearer ${token}`, 
         },
       });
       toast.success('User created successfully!');
@@ -208,7 +219,7 @@ export const useUsers = () => {
       }
       await axios.put(`${baseUrl}/users/${userInfos.id}`, userInfos, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('User updated successfully!');
@@ -230,7 +241,7 @@ export const useUsers = () => {
     try {
       await axios.delete(`${baseUrl}/users/${userId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('User deleted successfully!');
@@ -247,21 +258,36 @@ export const useUsers = () => {
     },
   });
 
+
+  let token5 = "";
+const usersInfos = localStorage.getItem("USER_TOKEN");
+
+if (usersInfos) {
+  token5 = JSON.parse(usersInfos).token;
+}
+console.log(`Bearer ${token5}`);
+console.log("7777777777777777777777", `${baseUrl}users`);
+
+
   // get All
   const { data: allUsers, isError, error } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
-      const { data } = await axios.get(`${baseUrl}/users`, {
+      const { data } = await axios.get(`${baseUrl}users`, 
+      {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token5}`,
         },
-      });
-      setIsLoadedUser(false);
+      }
+    );
+      setIsLoadedUser(false);      
       return data;
     },
   });
 
   if (isError) {
+    console.log("oooooooooooooo", error);
+    
     toast.error(error?.message || 'Error fetching users');
   }
 
@@ -277,7 +303,7 @@ export const useUsers = () => {
       const { data } = await axios.get(`${baseUrl}/users/${userId}`, 
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+            Authorization: `Bearer ${token}`,
           },
         }
     );
@@ -330,7 +356,7 @@ export const useInsurances = () => {
       }
       await axios.post(baseUrl, insuranceInfos, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('Insurance product created successfully!');
@@ -359,7 +385,7 @@ export const useInsurances = () => {
       }
       await axios.put(`${baseUrl}/${insuranceInfos.id}`, insuranceInfos, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('Insurance product updated successfully!');
@@ -381,7 +407,7 @@ export const useInsurances = () => {
     try {
       await axios.delete(`${baseUrl}/${insuranceId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('Insurance product deleted successfully!');
@@ -404,7 +430,7 @@ export const useInsurances = () => {
     queryFn: async () => {
       const { data } = await axios.get(baseUrl, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setIsLoadedInsurance(false);
@@ -424,7 +450,7 @@ export const useInsurances = () => {
     queryFn: async () => {
       const { data } = await axios.get(`${baseUrl}/${insuranceId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setIsLoadedDetailsInsurance(false);
@@ -474,7 +500,7 @@ export const useSubscriptions = () => {
       }
       await axios.post(baseUrl, subscriptionInfos, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('Subscription created successfully!');
@@ -503,7 +529,7 @@ export const useSubscriptions = () => {
       }
       await axios.put(`${baseUrl}/${subscriptionInfos.id}`, subscriptionInfos, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('Subscription updated successfully!');
@@ -525,7 +551,7 @@ export const useSubscriptions = () => {
     try {
       await axios.delete(`${baseUrl}/${subscriptionId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success('Subscription deleted successfully!');
@@ -548,7 +574,7 @@ export const useSubscriptions = () => {
     queryFn: async () => {
       const { data } = await axios.get(baseUrl, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setIsLoadedSubscription(false);
@@ -568,7 +594,7 @@ export const useSubscriptions = () => {
     queryFn: async () => {
       const { data } = await axios.get(`${baseUrl}/${subscriptionId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setIsLoadedDetailsSubscription(false);
